@@ -1,0 +1,20 @@
+# Explore data structure
+print("=" * 60)
+print("DATA STRUCTURE OVERVIEW")
+print("=" * 60)
+
+for name, df in files.items():
+    print(f"\n{'='*60}")
+    print(f"{name.upper()} Dataset")
+    print(f"{'='*60}")
+    print(f"Shape: {df.shape[0]:,} rows × {df.shape[1]} columns")
+    print(f"\nColumns: {list(df.columns)}")
+    print(f"\nFirst few rows:")
+    display(df.head(3))
+    print(f"\nData types:")
+    print(df.dtypes)
+    print(f"\nMissing values:")
+    missing = df.isnull().sum()
+    missing_pct = (missing / len(df) * 100).round(2)
+    missing_df = pd.DataFrame({'Count': missing, 'Percentage': missing_pct})
+    print(missing_df[missing_df['Count'] > 0])

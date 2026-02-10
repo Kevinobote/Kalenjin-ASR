@@ -1,0 +1,77 @@
+[
+  {
+    "metrics": {
+      "char_count": 23,
+      "word_count": 4,
+      "avg_word_length": 5.0,
+      "unique_chars": 15,
+      "whitespace_ratio": 0.13043478260869565,
+      "max_repetition": 0,
+      "unique_words": 4,
+      "word_diversity": 1.0
+    },
+    "is_valid": true,
+    "issues": [],
+    "identifier": "audio001.wav"
+  },
+  {
+    "metrics": {
+      "char_count": 26,
+      "word_count": 5,
+      "avg_word_length": 4.4,
+      "unique_chars": 14,
+      "whitespace_ratio": 0.15384615384615385,
+      "max_repetition": 0,
+      "unique_words": 5,
+      "word_diversity": 1.0
+    },
+    "is_valid": true,
+    "issues": [],
+    "identifier": "audio002.wav"
+  },
+  {
+    "metrics": {
+      "char_count": 20,
+      "word_count": 5,
+      "avg_word_length": 3.2,
+      "unique_chars": 13,
+      "whitespace_ratio": 0.2,
+      "max_repetition": 0,
+      "unique_words": 5,
+      "word_diversity": 1.0
+    },
+    "is_valid": true,
+    "issues": [],
+    "identifier": "audio003.wav"
+  },
+  {
+    "metrics": {
+      "char_count": 22,
+      "word_count": 5,
+      "avg_word_length": 3.6,
+      "unique_chars": 12,
+      "whitespace_ratio": 0.18181818181818182,
+      "max_repetition": 0,
+      "unique_words": 5,
+      "word_diversity": 1.0
+    },
+    "is_valid": true,
+    "issues": [],
+    "identifier": "audio004.wav"
+  },
+  {
+    "metrics": {
+      "char_count": 27,
+      "word_count": 5,
+      "avg_word_length": 4.6,
+      "unique_chars": 14,
+      "whitespace_ratio": 0.14814814814814814,
+      "max_repetition": 0,
+      "unique_words": 5,
+      "word_diversity": 1.0
+    },
+    "is_valid": true,
+    "issues": [],
+    "identifier": "audio005.wav"
+  }
+]

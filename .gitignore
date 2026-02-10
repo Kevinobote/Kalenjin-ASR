@@ -1,0 +1,164 @@
+# Kalenjin ASR - Git Ignore File
+
+# ============================================================================
+# DATASET FILES (Large - Download separately)
+# ============================================================================
+# Raw Common Voice dataset
+cv-corpus-24.0-2025-12-05-kln/
+cv-corpus-24.0-2025-12-05-kln.tar.gz
+*.tar.gz
+*.zip
+
+# Processed dataset (regenerate from notebooks)
+processed_data/kalenjin_asr_dataset/
+data/
+
+# ============================================================================
+# MODEL FILES (Large - Train or download separately)
+# ============================================================================
+models/
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.safetensors
+
+# ============================================================================
+# PYTHON
+# ============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+audio_ml/
+.venv
+
+# ============================================================================
+# JUPYTER NOTEBOOKS
+# ============================================================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Jupyter Notebook temporary files
+*.ipynb_checkpoints
+
+# ============================================================================
+# LOGS & TEMPORARY FILES
+# ============================================================================
+*.log
+logs/
+preprocessing.log
+training.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# RESULTS & OUTPUTS (Optional - keep small summaries)
+# ============================================================================
+# Keep results/ but ignore large files
+results/**/*.wav
+results/**/*.mp3
+results/**/*.png
+results/**/*.jpg
+
+# ============================================================================
+# IDE & EDITOR
+# ============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================================================
+# OPERATING SYSTEM
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================================================================
+# CACHE & HUGGINGFACE
+# ============================================================================
+.cache/
+.huggingface/
+wandb/
+.neptune/
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ============================================================================
+# KEEP THESE FILES (Explicitly tracked)
+# ============================================================================
+# Configuration files
+!requirements.txt
+!README.md
+!LICENSE
+!.gitignore
+
+# Notebooks (keep source code)
+!notebooks/*.ipynb
+!notebooks/*.py
+
+# Scripts
+!scripts/*.py
+!scripts/*.sh
+
+# Small result files (summaries only)
+!results/quality_assessment/*.json
+!results/quality_assessment/*.txt
+
+# Vocabulary (small file)
+!processed_data/vocab.json

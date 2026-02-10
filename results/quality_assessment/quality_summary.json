@@ -1,0 +1,17 @@
+{
+  "audio_assessment": {
+    "total_files": 0,
+    "valid_files": 0,
+    "invalid_files": 0
+  },
+  "text_assessment": {
+    "total_samples": 5,
+    "valid_samples": 5,
+    "invalid_samples": 0
+  },
+  "text_stats": {
+    "avg_word_count": 4.8,
+    "avg_word_length": 4.160000000000001,
+    "vocabulary_size": 15
+  }
+}

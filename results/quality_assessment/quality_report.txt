@@ -1,0 +1,18 @@
+KALENJIN ASR CORPUS QUALITY ASSESSMENT REPORT
+==================================================
+
+AUDIO QUALITY ASSESSMENT
+-------------------------
+Total audio files: 0
+Valid files: 0
+Invalid files: 0
+
+TEXT QUALITY ASSESSMENT
+------------------------
+Total text samples: 5
+Valid samples: 5
+Invalid samples: 0
+Validity rate: 100.0%
+Average word count: 4.8
+Average word length: 4.2 chars
+Vocabulary size: 15
