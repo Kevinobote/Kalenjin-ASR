@@ -1,184 +1,42 @@
 ================================================================================
   KALENJIN ASR JOURNAL PAPER — TODO CHECKLIST
   File: Low_Resource_ASR_for_Kalenjin/conference_101719.tex
-  Current state: 9 pages, 12 figures, 5 tables, 19 equations, 39 references
-  Date: 2025-03-29
+  Current state: 14 pages, 19 figures, 10 tables, 19 equations, 42 references
+  Last updated: 2025-03-30
 ================================================================================
 
-CURRENT STATUS SUMMARY:
-  ✅ Introduction        — PhD-level, well-cited, 5 contributions listed
-  ✅ Related Work         — 5 subsections, 20+ citations from relevant literature
-  ✅ Methodology          — PhD-level, 19 equations, 12 figures, 5 tables
-  ❌ Results              — Too thin (41 lines / ~0.5 page)
-  ❌ Discussion           — Too thin (9 lines / ~0.3 page)
-  ❌ Conclusion           — Too thin (7 lines)
-  ❌ Acknowledgment       — Missing entirely
-  ❌ Author block         — 4 placeholder authors remain
-  ❌ No comparison table  — No benchmarking against other published results
-  ❌ No qualitative examples — No actual prediction vs ground truth shown
+  ALL ITEMS COMPLETED ✅
 
-================================================================================
-  HIGH PRIORITY — Will cause rejection if missing
-================================================================================
+HIGH PRIORITY:
+  [x] 1. Authors — 4 authors, no placeholders
+  [x] 2. Results section — full config table*, training dynamics, 6 findings, qualitative eval
+  [x] 3. Discussion — 4 subsections, PazaBench comparison
+  [x] 4. Conclusion — restated contributions, 5 future work items
+  [x] 5. Acknowledgment — Mozilla CV, Modal Cloud, universities
 
-[ ] 1. REMOVE PLACEHOLDER AUTHORS
-      - 4 author slots still say "Given Name Surname"
-      - Either fill with real co-authors or delete the empty blocks
-      - Location: lines ~20-50 in conference_101719.tex
+MEDIUM PRIORITY:
+  [x] 6. Comparison table — PazaBench + our results
+  [x] 7. Training loss curve — downloaded from Modal, Stage 1 + Stage 2
+  [x] 8. Qualitative predictions — 50-sample eval, greedy vs beam+LM
+  [x] 9. Related Work citations — strengthened
+  [x] 10. Underfull warnings — emergencystretch applied
 
-[ ] 2. EXPAND RESULTS SECTION (target: 1.5-2 pages)
-      Currently only ~0.5 page. Add:
-      [ ] a. Full performance comparison table (from METHODOLOGY.pdf Table 1)
-           - Include columns: Config, Training Data, Epochs, GPU, Batch Size,
-             Learning Rate, Feature Encoder, WER, CER
-      [ ] b. Training loss curves figure
-           - Plot training loss and validation loss vs. steps
-           - Show Stage 1 and Stage 2 separately
-           - Need to extract from training logs or notebooks
-      [ ] c. Qualitative prediction examples table
-           - Show 5-10 actual predictions vs ground truth
-           - Include per-example WER
-           - Shows reviewers what errors look like
-      [ ] d. Error analysis
-           - Common substitution patterns
-           - Word boundary errors
-           - Character confusion matrix (if available)
-      [ ] e. Language model impact analysis
-           - Before/after LM examples
-           - Types of corrections the LM makes
+LOW PRIORITY:
+  [x] 11. Abbreviation definitions
+  [x] 12. IEEEoverridecommandlockouts
+  [x] 13. Figure placement [!t]
+  [x] 14. Number formatting
+  [x] 15. Grammar/style
+  [x] 16. DOIs added
+  [x] 17. Final formatting check
 
-[ ] 3. EXPAND DISCUSSION SECTION (target: 1-1.5 pages)
-      Currently only ~0.3 page. Add:
-      [ ] a. Detailed error pattern analysis
-           - What types of words fail most (long words, rare words, tonal pairs)
-           - Why WER is high but CER is reasonable (agglutinative morphology)
-      [ ] b. Comparison with published low-resource ASR results
-           - Swahili, Amharic, Yoruba, Hausa WER numbers from literature
-           - Create a comparison table:
-             | Language | Hours | Model | WER | CER | Source |
-      [ ] c. Limitations subsection
-           - Read speech only (no spontaneous/conversational)
-           - No dialect-specific modeling
-           - Small LM corpus (only 11,057 sentences)
-           - Single foundation model (no Whisper/HuBERT comparison)
-           - Test evaluation on 200 utterances (not full test set for LM)
-      [ ] d. Threats to validity
-           - Distribution mismatch between splits (test longer than train)
-           - Crowd-sourced data quality variability
-           - No speaker demographics analysis in evaluation
-
-[ ] 4. EXPAND CONCLUSION (target: ~0.5 page)
-      Currently only 7 lines. Add:
-      [ ] a. Restate each contribution with specific numbers
-      [ ] b. Concrete future work with justification:
-           - External text corpora for larger LM
-           - Whisper/HuBERT comparison experiments
-           - Dialect-specific adaptation across sub-varieties
-           - Spontaneous speech evaluation
-           - Deployment as mobile/edge application
-
-[ ] 5. ADD ACKNOWLEDGMENT SECTION
-      Required by IEEE. Include:
-      - Mozilla Common Voice community and Kalenjin speakers
-      - Modal Cloud for GPU compute infrastructure
-      - Any funding sources or institutional support
-      - Supervisors/advisors if applicable
-      Location: before \begin{thebibliography}
-
-================================================================================
-  MEDIUM PRIORITY — Strengthens the paper significantly
-================================================================================
-
-[ ] 6. ADD COMPARISON TABLE WITH PUBLISHED BASELINES
-      Create a table like:
-      | Language   | Family    | Hours | Model      | WER    | Source        |
-      |------------|-----------|-------|------------|--------|---------------|
-      | English    | Germanic  | 960   | Wav2Vec2   | 3.4%   | Baevski 2020  |
-      | Swahili    | Bantu     | 200   | XLS-R      | 25.3%  | Olatunji 2023 |
-      | Amharic    | Semitic   | 100   | XLS-R      | 28.1%  | Tachbelie 2022|
-      | Yoruba     | Niger-C.  | 50    | XLS-R      | 35.2%  | Olatunji 2023 |
-      | Kalenjin   | Nilotic   | 20.22 | XLS-R+LM   | 61.75% | This work     |
-
-[ ] 7. ADD TRAINING LOSS CURVE FIGURE
-      - Need training logs from notebooks/02_model_training.ipynb
-      - Plot: x=steps, y=loss, two lines (train loss, val loss)
-      - Show both Stage 1 and Stage 2
-
-[ ] 8. ADD QUALITATIVE PREDICTION EXAMPLES TABLE
-      Example format:
-      | # | Reference                        | Prediction                      | WER  |
-      |---|----------------------------------|---------------------------------|------|
-      | 1 | tomo itinye coruet ne cepto iman | tomo itinye koruet ne cepto man | 33%  |
-      Need to extract from model inference outputs
-
-[ ] 9. STRENGTHEN RELATED WORK CITATIONS
-      - Cite Whisper [b2] and HuBERT [b16] by name in Section II-C
-      - Add inline citations when mentioning specific techniques
-      - Ensure every claim has a supporting reference
-
-[ ] 10. REDUCE UNDERFULL HBOX WARNINGS (11 remaining)
-       - Minor spacing issues
-       - Can fix with \sloppy in problematic paragraphs or rewording
-
-================================================================================
-  LOW PRIORITY — Polish for final submission
-================================================================================
-
-[ ] 11. CONSISTENT ABBREVIATION DEFINITIONS
-       IEEE rule: "Define abbreviations the first time they are used in the
-       text, even after they have been defined in the abstract."
-       Check first use of: ASR, CTC, WER, CER, SNR, VAD, RMS, ZCR,
-       HMM, GMM, DNN, E2E, SSL, LM, RTF, FP16, ATR
-
-[ ] 12. CLEAN UP \IEEEoverridecommandlockouts
-       - Funding footnote was removed but the command remains
-       - Either use it properly or remove line 2
-
-[ ] 13. FIGURE PLACEMENT
-       IEEE prefers figures at top/bottom of columns.
-       Change all [htbp] to [!t] for figure environments.
-
-[ ] 14. NUMBER FORMATTING CONSISTENCY
-       - Use consistent decimal places for WER/CER (2 decimal places)
-       - Use consistent notation for percentages (61.75% everywhere)
-       - Thousands separators: 11,057 not 11057
-
-[ ] 15. GRAMMAR AND STYLE PASS
-       - Consistent tense: past tense for experiments, present for paper
-       - Minimize passive voice where possible
-       - Check for orphan sentences and widow lines
-
-[ ] 16. ADD DOIs TO REFERENCES
-       IEEE strongly prefers DOI links in references.
-       Add where available, especially for:
-       - Journal articles (IEEE, ACL, Interspeech)
-       - Conference proceedings
-
-[ ] 17. FINAL FORMATTING CHECK
-       - Run pdflatex 3 times for all cross-references
-       - Verify 0 overfull boxes
-       - Verify 0 [?] citations
-       - Check all figure/table references resolve
-       - Ensure references are numbered consecutively
-
-================================================================================
-  DATA/ARTIFACTS NEEDED
-================================================================================
-
-[ ] Training loss logs (from 02_model_training.ipynb or Modal Cloud)
-[ ] Sample predictions vs ground truth (from model inference)
-[ ] Character confusion matrix (if available from evaluation)
-[ ] Published WER numbers for comparison languages (from cited papers)
-
-================================================================================
-  TARGET FINAL STATE
-================================================================================
-
-  Pages:      10-12 (IEEE conference allows up to 8+2 extra pages with fee)
-  Figures:    14-16 (add loss curves, comparison chart)
-  Tables:     7-8 (add full config table, comparison table, examples table)
-  Equations:  19 (sufficient)
-  References: 39-45 (may add a few more for comparison section)
-  Sections:   Abstract, I-VI + Acknowledgment + References
-
+FINAL STATE:
+  Pages:      14
+  Figures:    19 (including 2 double-column figure*)
+  Tables:     10 (including 2 double-column table*)
+  Equations:  19
+  References: 42
+  Overfull:   0
+  Broken [?]: 0
+  Model:      RareElf/kalenjin-asr (HuggingFace)
 ================================================================================
