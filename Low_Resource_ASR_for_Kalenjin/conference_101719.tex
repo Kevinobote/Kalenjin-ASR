@@ -16,41 +16,27 @@
 
 }
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Kevin Omondi Obote}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
+\author{
+\IEEEauthorblockN{1\textsuperscript{st} Kevin Omondi Obote}
+\IEEEauthorblockA{\textit{Strathmore Institute of} \\
+\textit{Mathematical Sciences} \\
 \textit{Strathmore University}\\
 Nairobi, Kenya \\
-0009-0000-7099-2154}
+kevin.obote@strathmore.edu}
 \and
 \IEEEauthorblockN{2\textsuperscript{nd} Annah Mumbua Muli}
-\IEEEauthorblockA{\textit{Department of Languages and Lingustics} \\
+\IEEEauthorblockA{\textit{Dept.\ of Languages} \\
+\textit{and Linguistics} \\
 \textit{Machakos University}\\
 Machakos, Kenya \\
-email address or ORCID}
+muliannah3@gmail.com}
 \and
-\IEEEauthorblockN{3\textsuperscript{rd} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{4\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{5\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{6\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
+\IEEEauthorblockN{3\textsuperscript{rd} Joyce Njiiri}
+\IEEEauthorblockA{\textit{Dept.\ of Languages} \\
+\textit{and Linguistics} \\
+\textit{Machakos University}\\
+Machakos, Kenya \\
+joycenjiiri@mksu.ac.ke}
 }
 
 \maketitle
@@ -186,7 +172,7 @@ Fig.~\ref{fig:split_dist} illustrates the corpus partitioning and duration distr
 Exploratory analysis of the training transcriptions reveals a vocabulary of 18,576 unique words across 69,318 total word tokens. The character frequency distribution (Fig.~\ref{fig:char_freq}) shows that the five most frequent characters are \textit{e}, \textit{i}, \textit{k}, \textit{a}, and \textit{o}, reflecting the vowel-heavy phonological structure of Kalenjin.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/char_freq.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/char_freq.png}}
 \caption{Character frequency distribution in the training set. The distribution reflects Kalenjin's phonological structure, with high-frequency vowels (\textit{e}, \textit{i}, \textit{a}, \textit{o}) and the consonant \textit{k}.}
 \label{fig:char_freq}
 \end{figure}
@@ -202,7 +188,7 @@ Fig.~\ref{fig:word_freq} presents the 30 most frequent words. Function words suc
 The word frequency distribution follows Zipf's law (Fig.~\ref{fig:zipf}), with the log-log rank-frequency plot closely tracking the theoretical $f \propto 1/r$ relationship. This confirms that the corpus exhibits natural language statistics despite its relatively small size.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/zipf.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/zipf.png}}
 \caption{Zipf's law analysis of the training vocabulary. The observed rank-frequency distribution (blue) closely follows the theoretical inverse relationship (red dashed), confirming natural language statistics.}
 \label{fig:zipf}
 \end{figure}
@@ -256,7 +242,7 @@ The effectiveness of silence trimming is quantified by the speech ratio $\rho$:
 where $L_{\text{trimmed}}$ and $L_{\text{original}}$ denote the trimmed and original signal lengths, respectively. The effectiveness of silence trimming is quantified by the speech ratio $\rho$ (\eqref{eq:speech_ratio}). Fig.~\ref{fig:speech_ratio} shows the distribution across splits, with means ranging from 0.639 (train) to 0.693 (test), indicating that 31--36\% of original audio consisted of non-speech segments.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/speech_ratio.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/speech_ratio.png}}
 \caption{Speech ratio distribution after VAD-based silence trimming. The majority of utterances retain 50--80\% of their original duration, with the test split showing slightly higher speech ratios.}
 \label{fig:speech_ratio}
 \end{figure}
@@ -285,7 +271,7 @@ E_{\text{RMS}} = \sqrt{\frac{1}{N}\sum_{n=1}^{N} x[n]^2}
 \label{eq:rms}
 \end{equation}
 
-\textbf{Spectral Centroid.} The ``center of mass'' of the spectrum, indicating perceived brightness:
+\textbf{Spectral Centroid.} The center of mass of the spectrum, indicating perceived brightness:
 \begin{equation}
 \text{SC} = \frac{\sum_{k=1}^{K} f_k \cdot |X[k]|}{\sum_{k=1}^{K} |X[k]|}
 \label{eq:spectral_centroid}
@@ -311,22 +297,34 @@ where $\text{sgn}(\cdot)$ is the sign function. High ZCR values indicate noisy o
 \label{eq:clipping}
 \end{equation}
 
-Fig.~\ref{fig:audio_quality} presents the distribution of key audio quality metrics across splits, and Fig.~\ref{fig:duration} shows the utterance duration distribution. Fig.~\ref{fig:sc_vs_dur} reveals the relationship between spectral centroid and utterance duration, showing that shorter utterances tend to exhibit higher spectral centroids, likely due to the proportionally greater influence of consonant energy in brief utterances.
+Fig.~\ref{fig:snr_boxplot}, Fig.~\ref{fig:sc_boxplot}, and Fig.~\ref{fig:zcr_boxplot} present the distribution of key audio quality metrics across splits. Fig.~\ref{fig:duration} shows the utterance duration distribution. Fig.~\ref{fig:sc_vs_dur} reveals the relationship between spectral centroid and utterance duration, showing that shorter utterances tend to exhibit higher spectral centroids, likely due to the proportionally greater influence of consonant energy in brief utterances.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{figures/audio_quality_boxplot.png}}
-\caption{Audio quality metrics by split. SNR values are consistently high ($>$25\,dB), spectral centroids fall within the expected speech range (200--8000\,Hz), and zero-crossing rates indicate clean recordings.}
-\label{fig:audio_quality}
+\centerline{\includegraphics[width=\columnwidth]{figures/snr_boxplot.png}}
+\caption{Signal-to-noise ratio distribution by split. All splits show consistently high SNR values ($>$25\,dB), with medians ranging from 48.9\,dB (validation) to 55.5\,dB (test).}
+\label{fig:snr_boxplot}
 \end{figure}
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/duration_dist.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/sc_boxplot.png}}
+\caption{Spectral centroid distribution by split. Values fall within the expected speech range (200--8000\,Hz), with means of 1,297\,Hz (train), 1,506\,Hz (validation), and 1,422\,Hz (test).}
+\label{fig:sc_boxplot}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{figures/zcr_boxplot.png}}
+\caption{Zero-crossing rate distribution by split. Low ZCR values (mean 0.10--0.12) across all splits indicate clean recordings with minimal noise contamination.}
+\label{fig:zcr_boxplot}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{figures/duration_dist.png}}
 \caption{Utterance duration distribution by split. The test split exhibits notably longer mean duration (3.89\,s) compared to train (2.84\,s), with a wider spread ($\sigma = 2.17$\,s vs. 1.30\,s).}
 \label{fig:duration}
 \end{figure}
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/sc_vs_dur.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/sc_vs_dur.png}}
 \caption{Spectral centroid vs.\ utterance duration (500 samples per split). Shorter utterances tend toward higher spectral centroids, reflecting proportionally greater consonant energy.}
 \label{fig:sc_vs_dur}
 \end{figure}
@@ -369,7 +367,7 @@ Kowalak akoek yokwotet, ketik tulonok & kowalak akoek yokwotet ketik tulonok \\
 The resulting vocabulary $\mathcal{V}$ comprises 32 tokens: 26 Latin letters (\textit{a--z}), apostrophe (\texttt{'}), space, pipe delimiter (\texttt|}), and three special tokens: \texttt{[PAD]} (padding, index 0), \texttt{[UNK]} (unknown, index 1), and \texttt{[CTC]} (CTC blank, index 2). Fig.~\ref{fig:wordcount} shows the transcription length distribution across splits.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/wordcount_dist.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/wordcount_dist.png}}
 \caption{Words per utterance across splits. Mean word count: 6.3 (train), 5.9 (validation), 6.5 (test). Range: 1--14 words. Mean word length: 5.60 characters.}
 \label{fig:wordcount}
 \end{figure}
@@ -382,27 +380,27 @@ A multi-dimensional quality filtering framework rejects samples failing any of t
 \caption{Quality Filtering Thresholds}
 \label{tab:thresholds}
 \centering
-\scriptsize
+\small
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Criterion} & \textbf{Threshold} & \textbf{Rationale} \\
 \hline
 \hline
-Duration & 0.5--20\,s & Exclude clicks/memory \\
+Duration & 0.5--20\,s & Exclude clicks / memory \\
 \hline
-SNR & $\geq$10\,dB & Ensure intelligibility \\
+SNR & $\geq$ 10\,dB & Ensure intelligibility \\
 \hline
-ZCR & $\leq$0.3 & Detect corrupted audio \\
+ZCR & $\leq$ 0.3 & Detect corrupted audio \\
 \hline
-Spect. centroid & 200--8000\,Hz & Validate speech content \\
+Spectral centroid & 200--8000\,Hz & Validate speech content \\
 \hline
-Clipping ratio & $\leq$1\% & Reject clipped audio \\
+Clipping ratio & $\leq$ 1\% & Reject clipped audio \\
 \hline
-Dynamic range & $\geq$6\,dB & Ensure signal variation \\
+Dynamic range & $\geq$ 6\,dB & Ensure signal variation \\
 \hline
-Word count & 1--50 & Reject empty/anomalous \\
+Word count & 1--50 & Reject empty / anomalous \\
 \hline
-Char repetition & $\leq$3 & Detect transcription errors \\
+Char repetition & $\leq$ 3 & Detect transcription errors \\
 \hline
 \end{tabular}
 \end{table}
@@ -410,41 +408,47 @@ Char repetition & $\leq$3 & Detect transcription errors \\
 Fig.~\ref{fig:snr} confirms that all retained samples exceed the 10\,dB SNR threshold by a wide margin, with minimum observed SNR of 25.8\,dB across all splits.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/snr_dist.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/snr_dist.png}}
 \caption{SNR distribution with 10\,dB minimum threshold (dashed red line). All retained samples comfortably exceed the threshold, with split means of 48.9--55.5\,dB.}
 \label{fig:snr}
 \end{figure}
 
 \subsection{Model Architecture and Transfer Learning}
 
-The foundation of this ASR system is Wav2Vec2-XLS-R-300M \cite{b15}, a cross-lingual speech representation model pre-trained on 436,000 hours of unlabeled speech spanning 128 languages.
+The foundation of this ASR system is Wav2Vec2-XLS-R-300M \cite{b15}, a cross-lingual speech representation model pre-trained on 436,000 hours of unlabeled speech spanning 128 languages. The architecture comprises three main components: a convolutional feature encoder, a Transformer encoder, and a task-specific CTC head.
 
 \subsubsection{Feature Encoder}
-The convolutional feature encoder consists of seven temporal convolution layers that transform raw waveform input $\mathbf{x} \in \mathbb{R}^T$ (where $T$ is the number of audio samples) into a sequence of latent representations $\mathbf{Z} = [\mathbf{z}_1, \ldots, \mathbf{z}_L] \in \mathbb{R}^{L \times d}$, where $L = \lfloor T / 320 \rfloor$ is the downsampled sequence length (corresponding to a 20\,ms frame rate at 16\,kHz) and $d = 512$ is the feature dimension.
+The convolutional feature encoder consists of seven temporal convolution layers that transform raw waveform input $\mathbf{x} \in \mathbb{R}^T$ (where $T$ is the number of audio samples) into a sequence of latent representations $\mathbf{Z} = [\mathbf{z}_1, \ldots, \mathbf{z}_L] \in \mathbb{R}^{L \times d}$, where $L = \lfloor T / 320 \rfloor$ is the downsampled sequence length (corresponding to a 20\,ms frame rate at 16\,kHz) and $d = 512$ is the feature dimension. Each convolution layer applies temporal convolution, group normalization, and GELU activation, progressively reducing the temporal resolution while increasing the representational capacity.
 
 \subsubsection{Transformer Encoder}
-The latent representations are projected to dimension $D = 1024$ and processed by a 24-layer Transformer encoder with 16 attention heads. Each Transformer layer applies multi-head self-attention followed by a position-wise feed-forward network:
+The latent representations are projected to dimension $D = 1024$ and processed by a 24-layer Transformer encoder with 16 attention heads. Each Transformer layer applies multi-head self-attention followed by a position-wise feed-forward network. The scaled dot-product attention mechanism is defined as:
+
 \begin{equation}
 \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}}\right)\mathbf{V}
 \label{eq:attention}
 \end{equation}
-where $\mathbf{Q}, \mathbf{K}, \mathbf{V} \in \mathbb{R}^{L \times d_k}$ are the query, key, and value matrices, and $d_k = D/16 = 64$ is the dimension per head. The output is a sequence of contextualized representations $\mathbf{H} = [\mathbf{h}_1, \ldots, \mathbf{h}_L] \in \mathbb{R}^{L \times D}$.
+
+\noindent where $\mathbf{Q}, \mathbf{K}, \mathbf{V} \in \mathbb{R}^{L \times d_k}$ are the query, key, and value matrices respectively, and $d_k = D/16 = 64$ is the dimension per attention head. The scaling factor $\sqrt{d_k}$ prevents the dot products from growing too large, which would push the softmax into regions with extremely small gradients. The output is a sequence of contextualized representations $\mathbf{H} = [\mathbf{h}_1, \ldots, \mathbf{h}_L] \in \mathbb{R}^{L \times D}$.
 
 \subsubsection{CTC Head}
-A linear projection maps the Transformer outputs to the vocabulary space:
+A linear projection layer maps the Transformer outputs to the vocabulary space:
+
 \begin{equation}
 \mathbf{y}_t = \mathbf{W}_{\text{ctc}} \mathbf{h}_t + \mathbf{b}_{\text{ctc}}
 \label{eq:ctc_head}
 \end{equation}
-where $\mathbf{W}_{\text{ctc}} \in \mathbb{R}^{|\mathcal{V}| \times D}$ and $\mathbf{b}_{\text{ctc}} \in \mathbb{R}^{|\mathcal{V}|}$, with $|\mathcal{V}| = 32$. The model totals 315.5 million parameters.
+
+\noindent where $\mathbf{W}_{\text{ctc}} \in \mathbb{R}^{|\mathcal{V}| \times D}$ is the weight matrix, $\mathbf{b}_{\text{ctc}} \in \mathbb{R}^{|\mathcal{V}|}$ is the bias vector, and $|\mathcal{V}| = 32$ is the vocabulary size. The resulting logits $\mathbf{y}_t$ are passed through a softmax function to obtain posterior probabilities over the vocabulary at each time step. The complete model totals 315.5 million parameters.
 
 \subsubsection{CTC Loss}
-The Connectionist Temporal Classification loss \cite{b12} marginalizes over all valid alignments $\boldsymbol{\pi}$ between the input sequence and target label sequence $\mathbf{l}$:
+The Connectionist Temporal Classification (CTC) loss \cite{b12} enables training without requiring explicit alignment between input frames and output characters. It marginalizes over all valid alignments $\boldsymbol{\pi}$ between the input sequence and target label sequence $\mathbf{l}$:
+
 \begin{equation}
 \mathcal{L}_{\text{CTC}} = -\ln \sum_{\boldsymbol{\pi} \in \mathcal{B}^{-1}(\mathbf{l})} \prod_{t=1}^{L} p(\pi_t | \mathbf{x})
 \label{eq:ctc_loss}
 \end{equation}
-where $\mathcal{B}^{-1}(\mathbf{l})$ is the set of all CTC paths that reduce to $\mathbf{l}$ after removing blanks and repeated characters, and $p(\pi_t | \mathbf{x}) = \text{softmax}(\mathbf{y}_t)_{\pi_t}$ is the posterior probability of token $\pi_t$ at time step $t$. The CTC loss was configured with mean reduction and the \texttt{ctc\_zero\_infinity} flag enabled to handle numerical edge cases.
+
+\noindent where $\mathcal{B}^{-1}(\mathbf{l})$ denotes the set of all CTC paths that reduce to the target sequence $\mathbf{l}$ after removing blank tokens and collapsing repeated characters, and $p(\pi_t | \mathbf{x}) = \text{softmax}(\mathbf{y}_t)_{\pi_t}$ is the posterior probability of emitting token $\pi_t$ at time step $t$. The CTC loss was configured with mean reduction and the \texttt{ctc\_zero\_infinity} flag enabled to handle numerical edge cases where alignment paths produce infinite loss values.
 
 \subsection{Two-Stage Training Strategy}
 
@@ -585,7 +589,7 @@ Stage 2 + KenLM & 100\% & --- & \textbf{61.75\%} & --- \\
 \end{table}
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=0.85\columnwidth]{figures/performance_progression.png}}
+\centerline{\includegraphics[width=\columnwidth]{figures/performance_progression.png}}
 \caption{WER progression across configurations. Data scaling (10\%$\rightarrow$100\%) eliminated degenerate predictions; two-stage training and KenLM integration yielded cumulative 38.25 percentage point reduction.}
 \label{fig:progression}
 \end{figure}
@@ -630,11 +634,11 @@ Our fine-tuned system achieves a CER of 0.20, which is \textbf{50\% lower} than 
 
 \subsection{The Agglutinative Penalty}
 
-The PazaBench data strikingly illustrates the ``agglutinative penalty'' inherent to Kalenjin ASR. For Omnilingual, the CER-to-WER ratio is approximately 1:2 (0.40 $\rightarrow$ 0.81), meaning that character-level errors compound severely at the word level. In our system, this ratio is approximately 1:3 (0.20 $\rightarrow$ 0.62). In contrast, for non-agglutinative languages like English, a CER of 0.20 would typically yield a WER well below 0.40. This disparity arises because Kalenjin's agglutinative morphology produces long words where a single character error---particularly in affixes encoding tense, aspect, or person---invalidates the entire word token. This finding has important implications for evaluation: CER may be a more informative metric than WER for agglutinative languages, as it better reflects the model's actual phonetic accuracy.
+The PazaBench data strikingly illustrates the agglutinative penalty inherent to Kalenjin ASR. For Omnilingual, the CER-to-WER ratio is approximately 1:2 (0.40 $\rightarrow$ 0.81), meaning that character-level errors compound severely at the word level. In our system, this ratio is approximately 1:3 (0.20 $\rightarrow$ 0.62). In contrast, for non-agglutinative languages like English, a CER of 0.20 would typically yield a WER well below 0.40. This disparity arises because Kalenjin's agglutinative morphology produces long words where a single character error, particularly in affixes encoding tense, aspect, or person invalidates the entire word token. This finding has important implications for evaluation: CER may be a more informative metric than WER for agglutinative languages, as it better reflects the model's actual phonetic accuracy.
 
 \subsection{Zero-Shot vs. Fine-Tuned Models}
 
-The comparison reveals that general-purpose models struggle with Kalenjin. OpenAI Whisper achieves CER 0.88 and WER 1.00, effectively failing at word-level recognition despite being trained on 680,000 hours of multilingual data \cite{b2}. Similarly, Phi-4 (CER 0.89) shows that large multimodal models lack the phonetic nuances required for Nilotic languages. Even Facebook MMS \cite{b37}, which covers 1,000+ languages, achieves WER 1.03 on Kalenjin---worse than random at the word level.
+The comparison reveals that general-purpose models struggle with Kalenjin. OpenAI Whisper achieves CER 0.88 and WER 1.00, effectively failing at word-level recognition despite being trained on 680,000 hours of multilingual data \cite{b2}. Similarly, Phi-4 (CER 0.89) shows that large multimodal models lack the phonetic nuances required for Nilotic languages. Even Facebook MMS \cite{b37}, which covers 1,000+ languages, achieves WER 1.03 on Kalenjin, worse than random at the word level.
 
 In contrast, our approach of fine-tuning XLS-R-300M with a two-stage strategy and language model integration achieves substantially better results with only 20.22 hours of target-language data. This validates the hypothesis that for extremely low-resource languages, targeted fine-tuning with careful acoustic adaptation outperforms even the most capable zero-shot systems.
 
@@ -642,11 +646,11 @@ In contrast, our approach of fine-tuning XLS-R-300M with a two-stage strategy an
 
 Several limitations should be noted. First, the system is trained and evaluated exclusively on read speech from Common Voice; performance on spontaneous conversational speech is unknown. Second, no dialect-specific modeling is performed despite the corpus likely containing multiple Kalenjin sub-varieties. Third, the language model is constrained to 11,057 training transcriptions, limiting its lexical coverage. Fourth, the distribution mismatch between splits (test mean duration 3.89\,s vs. train 2.84\,s; test SNR 55.5\,dB vs. train 50.7\,dB) may affect evaluation reliability. Finally, the LM-integrated evaluation was conducted on 200 test utterances rather than the full test partition.
 
-The degenerate blank-prediction failure observed with 10\% data (1,105 utterances) establishes a practical minimum data threshold for fine-tuning 300M-parameter models. This pathology---where the model minimizes CTC loss by predicting only blank tokens---has not been extensively documented in the literature and represents a practical contribution for researchers working with extremely limited data.
+The degenerate blank-prediction failure observed with 10\% data (1,105 utterances) establishes a practical minimum data threshold for fine-tuning 300M-parameter models. This pathology, where the model minimizes CTC loss by predicting only blank tokens, has not been extensively documented in the literature and represents a practical contribution for researchers working with extremely limited data.
 
 \section{Conclusion}
 
-We presented a complete ASR framework for Kalenjin, establishing the first documented baseline for this under-resourced Nilotic language. Our three-component approach---modular preprocessing with Kalenjin-specific normalization, two-stage fine-tuning of Wav2Vec2-XLS-R-300M, and KenLM language model integration---achieved a final WER of 61.75\% and CER of 20.11\% from 20.22 hours of training data. The 55.3\% relative CER reduction from feature encoder unfreezing and 10.7\% relative WER improvement from language modeling validate staged acoustic adaptation and lightweight LM integration as effective strategies for low-resource African language ASR.
+We presented a complete ASR framework for Kalenjin, establishing the first documented baseline for this under-resourced Nilotic language. Our three-component approach, modular preprocessing with Kalenjin-specific normalization, two-stage fine-tuning of Wav2Vec2-XLS-R-300M, and KenLM language model integration, achieved a final WER of 61.75\% and CER of 20.11\% from 20.22 hours of training data. The 55.3\% relative CER reduction from feature encoder unfreezing and 10.7\% relative WER improvement from language modeling validate staged acoustic adaptation and lightweight LM integration as effective strategies for low-resource African language ASR.
 
 Future work includes: (1) expanding the language model with external Kalenjin text; (2) exploring alternative foundation models (Whisper, HuBERT); (3) dialect-specific adaptation across Kalenjin sub-varieties; and (4) evaluation on spontaneous speech.
 
@@ -729,7 +733,7 @@ Future work includes: (1) expanding the language model with external Kalenjin te
 
 \bibitem{b41} Y. Xiao, L. Wang, and J. Chen, ``Adapting where it matters: Depth-aware adaptation for efficient multilingual speech recognition in low-resource languages,'' \textit{arXiv preprint arXiv:2602.01008}, 2026.
 
-\bibitem{b42} Microsoft Research Africa, ``PazaBench: A benchmark for automatic speech recognition on low resource languages,'' 2026, alpha version, Part of Project Gecko---Equitable Generative AI for the Global Majority. [Online]. Available: https://www.microsoft.com/en-us/research/project/project-gecko/
+\bibitem{b42} Microsoft Research Africa, ``PazaBench: A benchmark for automatic speech recognition on low resource languages,'' 2026, alpha version, Part of Project Gecko, Equitable Generative AI for the Global Majority. [Online]. Available: https://www.microsoft.com/en-us/research/project/project-gecko/
 
 \end{thebibliography}
 
