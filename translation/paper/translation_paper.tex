@@ -1,0 +1,190 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{url}
+
+\begin{document}
+\emergencystretch=3em
+
+\title{Cascaded Speech Translation for Kalenjin: Bridging ASR and Neural Machine Translation for a Low-Resource Nilotic Language}
+
+\author{
+\IEEEauthorblockN{1\textsuperscript{st} Kevin Omondi Obote}
+\IEEEauthorblockA{\textit{Strathmore Institute of} \\
+\textit{Mathematical Sciences} \\
+\textit{Strathmore University}\\
+\textit{Guild Code}\\
+Nairobi, Kenya \\
+kevin.obote@strathmore.edu\\
+obote@guild-code.com}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Annah Mumbua Muli}
+\IEEEauthorblockA{\textit{Dept.\ of Languages} \\
+\textit{and Linguistics} \\
+\textit{Machakos University}\\
+Machakos, Kenya \\
+muliannah3@gmail.com}
+\and
+\IEEEauthorblockN{3\textsuperscript{rd} Vivian Nyamari Mora}
+\IEEEauthorblockA{\textit{Strathmore Institute of} \\
+\textit{Mathematical Sciences} \\
+\textit{Strathmore University}\\
+Nairobi, Kenya \\
+vivian.mora@strathmore.edu}
+\and
+\IEEEauthorblockN{4\textsuperscript{th} Joyce Njiiri}
+\IEEEauthorblockA{\textit{Dept.\ of Languages} \\
+\textit{and Linguistics} \\
+\textit{Machakos University}\\
+Machakos, Kenya \\
+joycenjiiri@mksu.ac.ke}
+}
+
+\maketitle
+
+\begin{abstract}
+Speech translation for under-resourced African languages remains a critical unsolved challenge, limiting digital inclusion for millions of speakers. This paper presents a cascaded speech translation pipeline for Kalenjin, a tonal, agglutinative Southern Nilotic language spoken by 5--6 million people in Kenya's Rift Valley. Our system chains a fine-tuned Wav2Vec2-XLS-R-300M automatic speech recognition (ASR) model---achieving 61.75\% Word Error Rate (WER) and 20.11\% Character Error Rate (CER)---with Meta's NLLB-200 neural machine translation model for Kalenjin-to-English translation. Since Kalenjin is not among NLLB-200's 202 supported languages, we investigate cross-lingual transfer via typologically related proxy languages: Nuer (Western Nilotic), Luo (Western Nilotic), and Swahili (Bantu). We evaluate zero-shot translation quality, analyze the cascaded error propagation between ASR and machine translation components, and establish the first documented speech translation baseline for Kalenjin. This work demonstrates a reproducible methodology for extending speech translation to languages absent from current multilingual models, with implications for practical deployment in education, healthcare, and governance across linguistically diverse African communities.
+\end{abstract}
+
+\begin{IEEEkeywords}
+speech translation, Kalenjin, low-resource languages, NLLB-200, cascaded translation, Wav2Vec2-XLS-R, Nilotic languages, cross-lingual transfer
+\end{IEEEkeywords}
+
+% ============================================================================
+% I. INTRODUCTION
+% ============================================================================
+\section{Introduction}
+
+\IEEEPARstart{S}{peech} translation---the task of converting spoken language in one language into text or speech in another---represents a critical frontier in natural language processing, with profound implications for cross-cultural communication, digital inclusion, and access to information. While end-to-end and cascaded speech translation systems have achieved remarkable performance for high-resource language pairs such as English-French and English-German \cite{sperber2020speech, anastasopoulos2022findings}, the vast majority of the world's languages remain entirely excluded from these advances.
+
+The African continent, home to over 2,000 languages distributed across four major language families, exemplifies this exclusion with particular severity \cite{adelani2022masakhaner}. Even languages with millions of speakers lack the parallel corpora, annotated speech data, and computational resources necessary to build functional translation systems. This digital language divide prevents the deployment of voice-enabled services in education, healthcare, agriculture, and governance---domains where speech interfaces could have transformative impact for communities where oral communication predominates and literacy rates may be limited.
+
+Kalenjin, a Southern Nilotic language spoken by approximately 5--6 million people in Kenya's Rift Valley region \cite{toweett1979study}, serves as a representative case study for these challenges. As a tonal, agglutinative language with substantial dialectal variation across its sub-varieties (Nandi, Kipsigis, Tugen, Keiyo, Marakwet, Pokot, Sabaot), Kalenjin presents unique challenges for both speech recognition and machine translation. Our prior work established the first ASR baseline for Kalenjin, achieving 61.75\% WER and 20.11\% CER through two-stage fine-tuning of Wav2Vec2-XLS-R-300M with KenLM language model integration \cite{baevski2020wav2vec, babu2022xls, heafield2011kenlm}. This paper extends that work to the speech translation task.
+
+The central challenge is that Kalenjin is not supported by any existing machine translation system. Meta's NLLB-200 \cite{nllb2022}, the most comprehensive multilingual translation model covering 202 language codes, does not include Kalenjin. However, NLLB-200 does support several typologically related languages: Nuer (\texttt{nus\_Latn}, Western Nilotic), Luo (\texttt{luo\_Latn}, Western Nilotic), and Swahili (\texttt{swh\_Latn}, Bantu). This creates an opportunity for cross-lingual transfer, where the model's knowledge of related languages may partially generalize to Kalenjin.
+
+This paper makes the following contributions:
+
+\begin{enumerate}
+    \item A cascaded speech translation pipeline combining a fine-tuned ASR model (\texttt{RareElf/kalenjin-asr}) with NLLB-200 for Kalenjin-to-English translation.
+    \item Systematic evaluation of zero-shot translation quality using three typologically motivated proxy languages (Nuer, Luo, Swahili).
+    \item Analysis of cascaded error propagation between ASR and machine translation components.
+    \item The first documented speech translation baseline for Kalenjin, establishing a foundation for future research and practical deployment.
+\end{enumerate}
+
+% ============================================================================
+% II. RELATED WORK
+% ============================================================================
+\section{Related Work}
+
+\subsection{Speech Translation Architectures}
+
+Speech translation (ST) systems broadly fall into two categories: cascaded and end-to-end. Cascaded systems decompose the task into sequential components---typically automatic speech recognition (ASR) followed by machine translation (MT)---while end-to-end systems directly map source speech to target text \cite{sperber2020speech}.
+
+\subsubsection{Cascaded Systems}
+The cascaded approach chains independently trained ASR and MT models:
+\begin{equation}
+\hat{\mathbf{y}} = \underset{\mathbf{y}}{\arg\max}\; P_{\text{MT}}(\mathbf{y} | \hat{\mathbf{w}}) \quad \text{where} \quad \hat{\mathbf{w}} = \underset{\mathbf{w}}{\arg\max}\; P_{\text{ASR}}(\mathbf{w} | \mathbf{x})
+\label{eq:cascaded}
+\end{equation}
+where $\mathbf{x}$ is the source audio, $\hat{\mathbf{w}}$ is the ASR hypothesis, and $\hat{\mathbf{y}}$ is the translated output. The primary advantage is modularity: each component can be trained independently on different data. The primary disadvantage is error propagation---ASR errors compound in the MT stage. Bansal et al. \cite{bansal2019pre} demonstrated that pre-training on high-resource ASR improves low-resource speech-to-text translation, validating the cascaded approach for resource-constrained settings.
+
+\subsubsection{End-to-End Systems}
+End-to-end ST models directly optimize:
+\begin{equation}
+\hat{\mathbf{y}} = \underset{\mathbf{y}}{\arg\max}\; P(\mathbf{y} | \mathbf{x})
+\label{eq:e2e}
+\end{equation}
+eliminating the intermediate text representation. Jia et al. \cite{jia2019leveraging} showed that weakly supervised data can improve end-to-end ST, while Li et al. \cite{li2021multilingual} demonstrated efficient multilingual ST through fine-tuning of pre-trained models. However, end-to-end systems require parallel speech-translation data, which is unavailable for Kalenjin. The IWSLT evaluation campaigns \cite{anastasopoulos2022findings} have consistently shown that cascaded systems remain competitive with end-to-end approaches, particularly for low-resource language pairs.
+
+For Kalenjin, the cascaded approach is the only viable option given the absence of parallel speech-translation data. Our system leverages independently available resources: a fine-tuned ASR model and a pre-trained multilingual MT model.
+
+\subsection{Multilingual Neural Machine Translation}
+
+\subsubsection{NLLB-200}
+Meta's No Language Left Behind (NLLB) project \cite{nllb2022} produced translation models covering 202 language codes, trained on mined parallel data using a Sparsely Gated Mixture of Experts architecture. The distilled 600M-parameter variant (\texttt{nllb-200-distilled-600M}) provides a practical balance between quality and computational requirements. NLLB-200 employs a standard encoder-decoder Transformer architecture \cite{vaswani2017attention} with language-specific tokens to control source and target languages.
+
+The conditional probability of generating target token $y_t$ is:
+\begin{equation}
+P(y_t | y_{<t}, \mathbf{x}) = \text{softmax}(\mathbf{W}_o \cdot \text{Decoder}(\mathbf{y}_{<t}, \text{Encoder}(\mathbf{x})))
+\label{eq:nllb}
+\end{equation}
+where the encoder processes the source sentence with a language-specific prefix token.
+
+\subsubsection{M2M-100 and mBART}
+Fan et al. \cite{fan2021m2m} introduced M2M-100, a many-to-many multilingual model trained on 100 languages without English-centric biases. Liu et al. \cite{liu2020multilingual} proposed mBART, a multilingual denoising pre-training approach that enables fine-tuning for translation in low-resource pairs. Both models demonstrate that multilingual pre-training creates shared representations that transfer across languages, even to unseen language pairs.
+
+\subsubsection{Cross-Lingual Transfer for Unsupported Languages}
+When a target language is absent from the pre-training data, cross-lingual transfer exploits typological similarity between the target language and supported languages. Neubig and Hu \cite{neubig2018rapid} showed that rapid adaptation to new languages is possible with minimal parallel data when the model has been pre-trained on related languages. Zoph et al. \cite{zoph2016transfer} demonstrated that parent-child transfer learning---where a model trained on a high-resource ``parent'' language is fine-tuned on a low-resource ``child'' language---significantly improves translation quality.
+
+For Kalenjin, we exploit this principle by using proxy language codes from typologically related languages during inference, hypothesizing that the model's learned representations for Nilotic languages (Nuer, Luo) may partially generalize to Kalenjin.
+
+\subsection{Machine Translation for African Languages}
+
+The landscape of MT for African languages has evolved rapidly. Nekoto et al. \cite{nekoto2020participatory} established participatory research methodologies for low-resource African MT, emphasizing community involvement. Adelani et al. \cite{adelani2022few} demonstrated that a few thousand translations can significantly improve pre-trained models for African news translation, achieving substantial BLEU improvements across 16 languages. Reid et al. \cite{reid2021afromt} provided reproducible benchmarks for 8 African languages, establishing evaluation standards for the field.
+
+The JW300 corpus \cite{agic2016jw300} provides parallel data for over 300 languages from Jehovah's Witnesses publications, including several Kenyan languages. The OPUS collection \cite{tiedemann2020opus} aggregates parallel corpora from diverse sources. However, neither resource includes substantial Kalenjin-English parallel data, underscoring the need for the zero-shot and transfer learning approaches explored in this work.
+
+\subsection{ASR for Kalenjin}
+
+Our prior work established the first ASR baseline for Kalenjin using Mozilla Common Voice v24.0 data (23,141 utterances, 20.22 hours) \cite{ardila2020common}. The system fine-tunes Wav2Vec2-XLS-R-300M \cite{babu2022xls} through a two-stage strategy: Stage~1 freezes the CNN feature encoder (30 epochs, $\eta = 1 \times 10^{-4}$), and Stage~2 unfreezes it for end-to-end adaptation (15 epochs, $\eta = 5 \times 10^{-5}$). Integration of a 5-gram KenLM language model \cite{heafield2011kenlm} with beam search decoding ($\alpha = 0.6$, $\beta = 1.0$) yields the final system: WER 61.75\%, CER 20.11\%.
+
+Compared to the PazaBench benchmark \cite{pazabench2026} from Microsoft Research Africa, our fine-tuned system achieves CER 50\% lower than the best zero-shot model (Omnilingual, CER 0.40) and WER 23.5\% lower (0.81 vs. 0.62). The trained model is publicly available at \texttt{RareElf/kalenjin-asr} on HuggingFace.
+
+\subsection{Evaluation Metrics for Machine Translation}
+
+\subsubsection{BLEU}
+The Bilingual Evaluation Understudy (BLEU) score \cite{papineni2002bleu} measures translation quality by computing modified n-gram precision between candidate and reference translations:
+\begin{equation}
+\text{BLEU} = BP \cdot \exp\left(\sum_{n=1}^{N} w_n \log p_n\right)
+\label{eq:bleu}
+\end{equation}
+where $p_n$ is the modified precision for n-grams of length $n$, $w_n = 1/N$ are uniform weights (typically $N=4$), and $BP$ is the brevity penalty:
+\begin{equation}
+BP = \begin{cases} 1 & \text{if } c > r \\ \exp(1 - r/c) & \text{if } c \leq r \end{cases}
+\label{eq:bp}
+\end{equation}
+with $c$ = candidate length and $r$ = effective reference length. We report BLEU using SacreBLEU \cite{post2018sacrebleu} for reproducibility.
+
+\subsubsection{chrF}
+The character n-gram F-score (chrF) \cite{popovic2015chrf} is particularly suitable for morphologically rich languages like Kalenjin, as it operates at the character level:
+\begin{equation}
+\text{chrF}_\beta = (1 + \beta^2) \cdot \frac{\text{chrP} \cdot \text{chrR}}{\beta^2 \cdot \text{chrP} + \text{chrR}}
+\label{eq:chrf}
+\end{equation}
+where chrP and chrR are character n-gram precision and recall, respectively, and $\beta$ controls the precision-recall trade-off (typically $\beta = 2$).
+
+\subsubsection{Cascaded Error Rate}
+For cascaded ST systems, the overall error is a function of both ASR and MT errors. We define the cascaded translation error rate as:
+\begin{equation}
+\text{TER}_{\text{cascade}} = 1 - (1 - \text{WER}_{\text{ASR}}) \cdot (1 - \text{TER}_{\text{MT}})
+\label{eq:cascade_error}
+\end{equation}
+where $\text{WER}_{\text{ASR}}$ is the ASR word error rate and $\text{TER}_{\text{MT}}$ is the MT translation error rate. This formulation captures the compounding nature of errors in cascaded systems: even moderate error rates in each component can produce substantial end-to-end degradation.
+
+% Placeholder for remaining sections
+\section{Methodology}
+\textit{[To be completed after experimental evaluation]}
+
+\section{Results}
+\textit{[To be completed after experimental evaluation]}
+
+\section{Discussion}
+\textit{[To be completed after experimental evaluation]}
+
+\section{Conclusion}
+\textit{[To be completed after experimental evaluation]}
+
+\section*{Acknowledgment}
+The authors gratefully acknowledge the Mozilla Common Voice community and the Kalenjin-speaking contributors. Computational resources were provided by Modal Cloud infrastructure using NVIDIA A100 GPUs. The authors thank Guild Code and its community for their commitment to ensuring software products speak the local languages of their users. The authors also thank Strathmore University and Machakos University for institutional support.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
