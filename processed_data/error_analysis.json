@@ -1,0 +1,39 @@
+{
+  "source": "qualitative_results.json (50 test samples, beam+KenLM decoding)",
+  "total_categorized_errors": 114,
+  "error_distribution": {
+    "morpheme_boundary": {
+      "count": 5,
+      "pct": 4.385964912280701,
+      "merge": 0,
+      "split": 5
+    },
+    "rare_oov": {
+      "count": 56,
+      "pct": 49.122807017543856
+    },
+    "phonetic_confusion": {
+      "count": 20,
+      "pct": 17.543859649122805
+    },
+    "deletion_function_word": {
+      "count": 11,
+      "pct": 9.649122807017543
+    },
+    "insertion": {
+      "count": 22,
+      "pct": 19.298245614035086
+    },
+    "other": {
+      "count": 0,
+      "pct": 1.4210854715202004e-14
+    }
+  },
+  "raw_counts": {
+    "rare_oov": 56,
+    "deletion_function_word": 11,
+    "insertion": 22,
+    "phonetic_confusion": 20,
+    "morpheme_boundary_split": 5
+  }
+}

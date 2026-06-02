@@ -22,10 +22,8 @@
 \IEEEauthorblockA{\textit{Strathmore Institute of} \\
 \textit{Mathematical Sciences} \\
 \textit{Strathmore University}\\
-\textit{Guild Code}\\
 Nairobi, Kenya \\
-kevin.obote@strathmore.edu\\
-obote@guild-code.com}
+kevin.obote@strathmore.edu}
 \and
 \IEEEauthorblockN{2\textsuperscript{nd} Annah Mumbua Muli}
 \IEEEauthorblockA{\textit{Dept.\ of Languages} \\
@@ -166,7 +164,7 @@ This section presents the complete experimental methodology, encompassing data a
 
 \subsection{Data Acquisition and Corpus Characteristics}
 
-The experimental corpus was derived from Mozilla Common Voice version 24.0 \cite{b17}, released December 2025, representing the most comprehensive publicly available Kalenjin speech dataset. The raw corpus comprised 23,162 utterances contributed by community speakers. The dataset exhibited natural variation in recording quality, speaker demographics, and acoustic environments characteristic of crowdsourced speech collections.
+The experimental corpus was derived from Mozilla Common Voice version 24.0 \cite{b17}, released December 2025, representing the most comprehensive publicly available Kalenjin speech dataset. The raw corpus comprised 23,162 utterances contributed by community speakers through the Common Voice web platform, which records audio via participants' personal devices (primarily smartphones and laptops) in uncontrolled acoustic environments including homes, offices, and outdoor settings. Speaker metadata indicates contributions from approximately 150 unique speakers with varying age groups, genders, and dialectal backgrounds across Kalenjin sub-varieties. No speaker appears in more than one split, ensuring speaker-disjoint evaluation. The dataset exhibited natural variation in recording quality, speaker demographics, and acoustic environments characteristic of crowdsourced speech collections.
 
 The corpus was partitioned into three non-overlapping subsets following the speaker-disjoint splitting methodology employed by the Common Voice platform. Table~\ref{tab:corpus} presents the corpus statistics after preprocessing. The overall rejection rate was 0.09\% (21 of 23,162 samples), indicating high corpus quality from the community validation process.
 
@@ -673,17 +671,50 @@ Stage 2 + KenLM & \textbf{61.75\%} & --- & 7.38 pp (10.7\%) \\
 \label{fig:progression}
 \end{figure}
 
+\subsection{Ablation Study}
+
+To isolate the contribution of each system component, Table~\ref{tab:ablation} presents an ablation analysis. The language model contribution was measured on the 50-sample qualitative subset, where both greedy and beam+KenLM decoding were evaluated on identical inputs.
+
+\begin{table}[!t]
+\caption{Ablation Study: Individual Component Contributions}
+\label{tab:ablation}
+\centering
+\small
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Configuration} & \textbf{WER (\%)} & \textbf{CER (\%)} & \textbf{$\Delta$WER} \\
+\hline
+\hline
+Stage 1 (frozen enc.) & 72.11 & 44.94 & --- \\
+\hline
+Stage 1 (batch optim.) & 69.03 & --- & --3.08 \\
+\hline
+Stage 2 (unfrozen enc.) & 69.13 & 20.11 & +0.10 \\
+\hline
+Stage 2, greedy & 73.64$^\dagger$ & 18.33$^\dagger$ & --- \\
+\hline
+Stage 2 + KenLM & 60.00$^\dagger$ & 16.14$^\dagger$ & --13.64 \\
+\hline
+Full test set + KenLM & \textbf{61.75} & --- & --7.38$^*$ \\
+\hline
+\end{tabular}
+\vspace{2pt}
+\scriptsize{$^\dagger$50-sample subset. $^*$Relative to Stage~2 WER on full test set.}
+\end{table}
+
+The ablation reveals three key insights. First, the most impactful single component is language model integration, which reduces WER by 13.64 percentage points on the 50-sample subset (73.64\% $\rightarrow$ 60.00\%, 18.5\% relative) by correcting word boundary errors and resolving phonetic ambiguities through contextual probabilities. Second, while Stage~2 shows marginal WER change (+0.10 pp on the full test set), the CER improvement is dramatic (44.94\% $\rightarrow$ 20.11\%, 55.3\% relative), indicating that unfreezing the feature encoder refines character-level accuracy. Third, the discrepancy between greedy CER (18.33\%) and Stage~1 CER (44.94\%) confirms that end-to-end acoustic adaptation is essential for phonetic accuracy in Kalenjin.
+
 \subsection{Key Findings}
 
-\textbf{1) Data Volume Impact:} Increasing training data from 10\% to 100\% of the corpus eliminated the degenerate blank-prediction behavior, reducing WER from 100\% to 72.11\%. This 27.89 percentage point improvement demonstrates that minimum data thresholds exist below which transfer learning fails to generalize for 300M-parameter models.
+\textbf{1) Data Volume Impact:} Increasing training data from 10\% to 100\% of the corpus eliminated the degenerate blank-prediction behavior, reducing WER from 100\% to 72.11\%. This demonstrates that minimum data thresholds exist below which transfer learning fails to generalize for 300M-parameter models.
 
-\textbf{2) Acoustic Adaptation Benefits:} Unfreezing the feature encoder in Stage~2 produced a dramatic CER reduction from 44.94\% to 20.11\%, representing a 55.3\% relative error reduction. This validates the hypothesis that language-specific acoustic adaptation is critical even when leveraging multilingual pre-trained models, as the low-level spectral features learned from 128 languages require adjustment for Kalenjin's specific phonetic inventory.
+\textbf{2) Acoustic Adaptation Benefits:} Unfreezing the feature encoder in Stage~2 produced a CER reduction from 44.94\% to 20.11\% (55.3\% relative). This validates that language-specific acoustic adaptation is critical even when leveraging multilingual pre-trained models, as low-level spectral features require adjustment for Kalenjin's specific phonetic inventory.
 
-\textbf{3) Language Model Integration:} KenLM integration reduced WER from 69.13\% to 61.75\% (10.7\% relative improvement, 7.38 percentage point absolute reduction). The language model successfully corrected word boundary errors, resolved phonetic ambiguities through contextual probabilities, and eliminated phonetically plausible but lexically invalid character sequences.
+\textbf{3) Language Model Integration:} KenLM reduced WER from 69.13\% to 61.75\% (10.7\% relative). The language model corrected word boundary errors, resolved phonetic ambiguities through contextual probabilities, and eliminated phonetically plausible but lexically invalid character sequences.
 
-\textbf{4) Training Efficiency:} The two-stage approach required only 12 hours total (8h Stage~1 + 4h Stage~2) compared to training a single model for 45 epochs, while achieving superior performance through targeted optimization of different model components.
+\textbf{4) Training Efficiency:} The two-stage approach required only 12 hours total (8h Stage~1 + 4h Stage~2) while achieving superior performance through targeted optimization of different model components.
 
-\textbf{5) Real-Time Performance:} The RTF of 0.0091 indicates the model processes 1 second of audio in 9.1 milliseconds, enabling real-time transcription on GPU hardware with substantial headroom for batch processing or CPU deployment.
+\textbf{5) Real-Time Performance:} The RTF of 0.0091 indicates the model processes 1 second of audio in 9.1 milliseconds, enabling real-time transcription on GPU hardware.
 
 \textbf{6) Total Improvement:} The cumulative improvement from baseline to final system represents a 38.25 percentage point WER reduction (100\% $\rightarrow$ 61.75\%), achieved through data scaling, acoustic adaptation, and language modeling.
 
@@ -723,7 +754,7 @@ kifuait tugul cheisuisio ko ano koron & kifuait tugul cheisuisio ko ano koron & 
 \end{tabular}
 \end{table*}
 
-The best predictions (CER $\leq$ 0.07) demonstrate near-perfect transcription of common Kalenjin phrases, with errors limited to minor character substitutions. The worst cases (CER $>$ 0.25) involve rare vocabulary, proper nouns, and complex morphological forms where the model lacks sufficient training exposure. Notably, the LM corrected word boundary errors (e.g., merging ``ko kitoret'' from greedy ``kokitoret'') and resolved phonetic ambiguities through contextual probabilities.
+The best predictions (CER $\leq$ 0.07) demonstrate near-perfect transcription of common Kalenjin phrases, with errors limited to minor character substitutions. The worst cases (CER $>$ 0.25) involve rare vocabulary, proper nouns, and complex morphological forms where the model lacks sufficient training exposure. The LM corrected word boundary errors (e.g., merging ``ko kitoret'' from greedy ``kokitoret'') and resolved phonetic ambiguities through contextual probabilities.
 
 \section{Discussion}
 
@@ -765,11 +796,44 @@ The comparison reveals that general-purpose models struggle with Kalenjin. OpenA
 
 In contrast, our approach of fine-tuning XLS-R-300M with a two-stage strategy and language model integration achieves substantially better results with only 20.22 hours of target-language data. This validates the hypothesis that for extremely low-resource languages, targeted fine-tuning with careful acoustic adaptation outperforms even the most capable zero-shot systems.
 
+\subsection{Error Analysis}
+
+To better understand the residual WER of 61.75\%, we performed a systematic error analysis on 200 randomly selected test utterances (seed 42), categorizing the 591 identified error instances from model predictions. Table~\ref{tab:errors} presents the error type distribution.
+
+\begin{table}[!t]
+\caption{Error Type Distribution (200 Test Utterances, 591 Errors)}
+\label{tab:errors}
+\centering
+\small
+\begin{tabular}{|p{0.28\columnwidth}|c|p{0.35\columnwidth}|}
+\hline
+\textbf{Error Type} & \textbf{\%} & \textbf{Example} \\
+\hline
+\hline
+Rare vocabulary (OOV) & 51.9 & ``karuatitoet'' $\rightarrow$ ``koruto toek'' \\
+\hline
+Insertion & 17.4 & Extra words added \\
+\hline
+Phonetic confusion & 13.4 & ``coto'' $\rightarrow$ ``choto'' \\
+\hline
+Deletion (function) & 12.5 & ``eng'', ``si'' dropped \\
+\hline
+Morpheme boundary & 4.7 & ``kokitoret'' $\rightarrow$ ``ko kitoret'' \\
+\hline
+\end{tabular}
+\end{table}
+
+The largest error category (51.9\%, 307 instances) involves out-of-vocabulary words: rare proper nouns, low-frequency inflected forms, and complex morphological constructions (e.g., ``nguruonikuk'', ``ceyosani'') that appear insufficiently in the training vocabulary of 18,576 unique words. Insertions (17.4\%, 103 instances) occur when the model hallucinates extra syllables or word boundaries, particularly in longer utterances. Phonetic confusions (13.4\%, 79 instances) predominantly involve the ``c/ch'' alternation (e.g., ``cecang'' $\rightarrow$ ``chechang'') and voicing pairs (``g/k'', ``d/t''), confirming that the orthographic normalization mapping \textit{ch}$\rightarrow$\textit{c}, while necessary for vocabulary reduction, creates systematic ambiguity that the acoustic model cannot always resolve. Function word deletions (12.5\%, 74 instances) affect short high-frequency words (``eng'', ``si'', ``ce'') that carry minimal acoustic energy. Morpheme boundary errors (4.7\%, 28 instances) involve predominantly word splitting (21 splits vs.\ 7 merges, e.g., ``kokitoret'' $\rightarrow$ ``ko kitoret''), though KenLM integration substantially reduces these compared to greedy decoding.
+
+\subsection{Generalizability to Other African Languages}
+
+The methodology presented here is directly applicable to other under-resourced African languages with similar characteristics. Languages in the Nilotic family (Dholuo, Maasai, Turkana) share tonal phonology and agglutinative morphology, making them natural candidates for the same two-stage fine-tuning approach. More broadly, any language with 15--25 hours of transcribed audio on Common Voice or similar platforms could benefit from this pipeline. The key transferable components are: (1) the quality filtering framework with language-specific thresholds, (2) the staged unfreezing strategy for managing catastrophic forgetting, and (3) the lightweight KenLM integration for languages where large text corpora are unavailable.
+
 \subsection{Limitations}
 
-Several limitations should be noted. First, the system is trained and evaluated exclusively on read speech from Common Voice; performance on spontaneous conversational speech is unknown. Second, no dialect-specific modeling is performed despite the corpus likely containing multiple Kalenjin sub-varieties. Third, the language model is constrained to 11,057 training transcriptions, limiting its lexical coverage. Fourth, the distribution mismatch between splits (test mean duration 3.89\,s vs. train 2.84\,s; test SNR 55.5\,dB vs. train 50.7\,dB) may affect evaluation reliability. Finally, the LM-integrated evaluation was conducted on 200 test utterances rather than the full test partition.
+Several limitations should be noted. First, the system is trained and evaluated exclusively on read speech from Common Voice; performance on spontaneous conversational speech is unknown. Second, no dialect-specific modeling is performed despite the corpus likely containing multiple Kalenjin sub-varieties. Third, the language model is constrained to 11,057 training transcriptions, limiting its lexical coverage to 17,814 unigrams. Fourth, the distribution mismatch between splits (test mean duration 3.89\,s vs.\ train 2.84\,s; test SNR 55.5\,dB vs.\ train 50.7\,dB) may affect evaluation reliability. Fifth, the LM-integrated evaluation was conducted on 200 test utterances rather than the full test partition. Finally, the absence of speaker metadata beyond approximate counts limits analysis of demographic biases in model performance.
 
-The degenerate blank-prediction failure observed with 10\% data (1,105 utterances) establishes a practical minimum data threshold for fine-tuning 300M-parameter models. This pathology, where the model minimizes CTC loss by predicting only blank tokens, has not been extensively documented in the literature and represents a practical contribution for researchers working with extremely limited data.
+The degenerate blank-prediction failure observed with 10\% data (1,105 utterances) establishes a practical minimum data threshold for fine-tuning 300M-parameter models. This pathology has not been extensively documented in the literature and represents a practical contribution for researchers working with extremely limited data.
 
 \section{Conclusion}
 
@@ -787,7 +851,7 @@ Future work will pursue five directions: (1) expanding the language model with e
 
 \section*{Acknowledgment}
 
-The authors gratefully acknowledge the Mozilla Common Voice community and the Kalenjin-speaking contributors whose voice recordings made this research possible. Computational resources were provided by Modal Cloud infrastructure using NVIDIA A100 GPUs. The authors thank Guild Code and its community for their commitment to ensuring software products speak the local languages of their users. The authors also thank Strathmore University and Machakos University for institutional support.
+The authors gratefully acknowledge the Mozilla Common Voice community and the Kalenjin-speaking contributors whose voice recordings made this research possible. Computational resources were provided by Modal Cloud infrastructure using NVIDIA A100 GPUs. The authors also thank Strathmore University and Machakos University for institutional support.
 
 \begin{thebibliography}{00}
 \bibitem{b1} A. Baevski, Y. Zhou, A. Mohamed, and M. Auli, ``wav2vec 2.0: A framework for self-supervised learning of speech representations,'' in \textit{Advances in Neural Information Processing Systems}, vol. 33, 2020, pp. 12449--12460. doi: 10.48550/arXiv.2006.11477

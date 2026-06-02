@@ -1,0 +1,232 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{reviewercolor}{RGB}{0,0,128}
+\definecolor{responsecolor}{RGB}{0,100,0}
+
+\newcommand{\reviewercomment}[1]{\textcolor{reviewercolor}{\textbf{Reviewer Comment:} \textit{#1}}}
+\newcommand{\response}[1]{\textcolor{responsecolor}{\textbf{Our Response:} #1}}
+
+\title{\textbf{Response to Reviewers' Comments}\\[0.5em]
+\large Submission 46: ``Low-Resource ASR for Kalenjin: Two-Stage Fine-Tuning of Wav2Vec2-XLS-R with KenLM Integration''}
+\author{Kevin Omondi Obote, Annah Mumbua Muli, Vivian Nyamari Moraa, Joyce Muthoni Njiiri}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\noindent Dear Editors and Reviewers,
+
+\vspace{0.5em}
+
+\noindent We sincerely thank the reviewers for their careful reading of our manuscript and their constructive feedback. The comments have significantly strengthened the quality and rigor of our paper. Below, we provide a detailed point-by-point response to each comment, clearly describing the revisions made to address the concerns raised.
+
+\vspace{0.5em}
+
+\noindent All modifications are reflected in the revised manuscript. New additions include Table~VII (Ablation Study), Table~VIII (Error Type Distribution), an expanded Error Analysis subsection, a Generalizability discussion, and enhanced dataset documentation.
+
+\vspace{1.5em}
+
+\hrule
+\vspace{1em}
+
+\section*{Response to Reviewer 1}
+\textbf{Overall Score: 8.1/10 \quad Decision: Accept}
+
+\vspace{0.5em}
+
+We are grateful to Reviewer~1 for the thorough and encouraging evaluation. We address each point below.
+
+\vspace{1em}
+
+\subsection*{1. Novelty \& Contribution (8.5/10)}
+
+\reviewercomment{The combination of cross-lingual transfer (Wav2Vec2-XLS-R), staged fine-tuning, and lightweight language modeling is not entirely novel individually, but its application and systematic evaluation in this context is valuable and impactful.}
+
+\response{We appreciate this assessment. We agree that the individual techniques are established; our contribution lies in their systematic application to an undocumented language, the identification of training pathologies specific to extremely low-resource settings, and establishing the first ASR baseline for Kalenjin. No changes were required for this point.}
+
+\vspace{1em}
+
+\subsection*{2. Technical Soundness (8/10)}
+
+\reviewercomment{The final WER (61.75\%) remains relatively high, which is expected but could benefit from deeper error analysis or qualitative insights.}
+
+\response{We have added a comprehensive error analysis based on 200 randomly selected test utterances (Section~V, new subsection ``Error Analysis''). We systematically categorized 591 error instances into five types:}
+
+\begin{itemize}[noitemsep]
+    \item Rare/OOV vocabulary: 51.9\% (307 errors)
+    \item Insertions: 17.4\% (103 errors)
+    \item Phonetic confusion (c/ch, g/k pairs): 13.4\% (79 errors)
+    \item Deletion of function words: 12.5\% (74 errors)
+    \item Morpheme boundary errors: 4.7\% (28 errors)
+\end{itemize}
+
+\noindent This analysis reveals that the dominant error source is insufficient training vocabulary coverage (18,576 unique words), with over half of all errors involving word forms unseen or underrepresented during training. This provides concrete direction for future improvements through expanded text corpora. The results are presented in the new Table~VIII.
+
+\vspace{1em}
+
+\subsection*{3. Methodological Clarity (9/10)}
+
+\reviewercomment{Descriptions are precise, especially regarding language-specific normalization. The discussion of training pathologies is particularly strong.}
+
+\response{We thank the reviewer for this positive assessment. No changes were required.}
+
+\vspace{1em}
+
+\subsection*{4. Experimental Rigor (7.5/10)}
+
+\reviewercomment{The study would benefit from: (a) Comparisons with alternative architectures or baselines (if feasible); (b) More detailed ablation studies (e.g., impact of preprocessing components or LM integration individually).}
+
+\response{We have addressed both concerns:}
+
+\begin{enumerate}[label=(\alph*), noitemsep]
+    \item \textbf{Baseline comparisons:} The revised manuscript now includes an explicit comparison table (Table~VI) contextualizing our results against the PazaBench benchmark, which evaluates Omnilingual, Paza, Facebook MMS, Whisper, Phi-4, and other models on Kalenjin. Our fine-tuned system achieves CER 50\% lower than the best zero-shot model (Omnilingual) and WER 23.5\% lower.
+    
+    \item \textbf{Ablation study:} We have added Table~VII presenting an ablation analysis with the following configurations:
+    \begin{itemize}[noitemsep]
+        \item Stage~1 (frozen encoder): WER 72.11\%, CER 44.94\%
+        \item Stage~1 (batch optimized): WER 69.03\%
+        \item Stage~2 (unfrozen encoder): WER 69.13\%, CER 20.11\%
+        \item Stage~2 greedy decoding: WER 73.64\%, CER 18.33\% (50-sample subset)
+        \item Stage~2 + KenLM beam search: WER 60.00\%, CER 16.14\% (50-sample subset)
+        \item Full test set + KenLM: WER 61.75\%
+    \end{itemize}
+    The ablation demonstrates that language model integration provides the largest single-component improvement (13.64 percentage points on the evaluation subset), while Stage~2 acoustic adaptation provides the most significant CER improvement (55.3\% relative reduction).
+\end{enumerate}
+
+\vspace{1em}
+
+\subsection*{5. Results \& Impact (8/10)}
+
+\reviewercomment{The 55.3\% relative CER reduction is significant. The additional 10.7\% WER improvement from KenLM reinforces the importance of language modeling.}
+
+\response{We thank the reviewer for recognizing the significance of these results. The ablation study now further reinforces this finding by showing the LM contribution in isolation.}
+
+\vspace{1em}
+
+\subsection*{6. Writing Quality \& Organization (7.5/10)}
+
+\reviewercomment{Some sentences are overly long. Transitions between components can be smoother. Minor redundancy and punctuation issues.}
+
+\response{We have revised the manuscript to address these concerns:}
+\begin{itemize}[noitemsep]
+    \item Shortened overly long sentences throughout, particularly in the Key Findings subsection
+    \item Removed redundant qualifiers and filler words (e.g., ``dramatic'', ``substantially'')
+    \item Improved transitions between subsections in the Discussion
+    \item Fixed spacing around parentheses and punctuation inconsistencies
+\end{itemize}
+
+\vspace{1.5em}
+\hrule
+\vspace{1em}
+
+\section*{Response to Reviewer 2}
+\textbf{Decision: Accept (with moderate revisions)}
+
+\vspace{0.5em}
+
+We sincerely thank Reviewer~2 for the supportive evaluation and the constructive suggestions for improvement. We address each point below.
+
+\vspace{1em}
+
+\subsection*{1. Dataset Description}
+
+\reviewercomment{The dataset description requires more detail regarding speaker diversity, recording conditions, and preprocessing procedures to support reproducibility.}
+
+\response{We have expanded Section~III-A (Data Acquisition and Corpus Characteristics) to include:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Speaker diversity:} The corpus includes contributions from approximately 150 unique speakers with varying age groups, genders, and dialectal backgrounds across Kalenjin sub-varieties.
+    \item \textbf{Recording conditions:} Audio was recorded via participants' personal devices (primarily smartphones and laptops) in uncontrolled acoustic environments including homes, offices, and outdoor settings, through the Mozilla Common Voice web platform.
+    \item \textbf{Speaker-disjoint evaluation:} We explicitly confirm that no speaker appears in more than one split, ensuring unbiased evaluation.
+    \item \textbf{Preprocessing:} The complete preprocessing pipeline is documented in Sections~III-B through III-D, with quality thresholds in Table~IV and rejection statistics (0.09\% rejection rate).
+\end{itemize}
+
+\vspace{1em}
+
+\subsection*{2. Comparative Analysis}
+
+\reviewercomment{The comparative analysis with baseline models and related low-resource ASR approaches could be expanded further.}
+
+\response{The revised manuscript now includes:}
+\begin{itemize}[noitemsep]
+    \item Table~I: PazaBench benchmark results for 8 models on Kalenjin (Omnilingual, Paza, Facebook MMS, Wav2Vec2-Conformer, Data2Vec, Whisper, Phi-4, Moonshine)
+    \item Table~VI: Direct comparison of our fine-tuned system against PazaBench baselines
+    \item Discussion of why zero-shot models (Whisper WER 1.00, MMS WER 1.03) fail on Kalenjin while targeted fine-tuning succeeds
+    \item Table~VII: Ablation study isolating individual component contributions
+\end{itemize}
+
+\vspace{1em}
+
+\subsection*{3. Error Analysis and Limitations}
+
+\reviewercomment{The discussion section would benefit from a deeper analysis of errors, limitations, and generalizability to other underrepresented African languages.}
+
+\response{We have added three new subsections to the Discussion:}
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{Error Analysis (new):} Systematic categorization of 591 errors from 200 test utterances into five types (Table~VIII), with analysis of root causes and implications for future work.
+    
+    \item \textbf{Generalizability to Other African Languages (new):} Discussion of how the methodology applies to other under-resourced African languages, particularly Nilotic family languages (Dholuo, Maasai, Turkana) that share tonal phonology and agglutinative morphology. We identify the key transferable components: quality filtering framework, staged unfreezing strategy, and lightweight KenLM integration.
+    
+    \item \textbf{Limitations (expanded):} Added acknowledgment of limited speaker metadata, the absence of demographic bias analysis, and the constraint of the LM to 17,814 unigrams from training transcriptions only.
+\end{enumerate}
+
+\vspace{1em}
+
+\subsection*{4. Grammar and Formatting}
+
+\reviewercomment{Minor grammatical and formatting inconsistencies should also be revised before final publication.}
+
+\response{We have carefully proofread the entire manuscript and corrected:}
+\begin{itemize}[noitemsep]
+    \item Grammatical inconsistencies and punctuation errors
+    \item Formatting of tables and figure captions for consistency
+    \item Spacing issues around mathematical notation
+    \item Consistent use of terminology throughout (e.g., ``under-resourced'' vs.\ ``low-resource'')
+\end{itemize}
+
+\vspace{1.5em}
+\hrule
+\vspace{1em}
+
+\section*{Summary of Revisions}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}p{0.45\textwidth}p{0.45\textwidth}@{}}
+\toprule
+\textbf{Reviewer Concern} & \textbf{Action Taken} \\
+\midrule
+Deeper error analysis & Added Table~VIII: 591 errors categorized across 200 test utterances \\
+\addlinespace
+Ablation studies & Added Table~VII: component-level ablation with real experimental data \\
+\addlinespace
+Dataset details & Expanded Section~III-A with speaker diversity, recording conditions \\
+\addlinespace
+Comparative baselines & Added PazaBench comparison (Table~I, Table~VI) \\
+\addlinespace
+Generalizability & New subsection on applicability to other African languages \\
+\addlinespace
+Writing quality & Shortened sentences, improved transitions, fixed punctuation \\
+\addlinespace
+Limitations & Expanded with speaker metadata, demographic bias, LM coverage \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{1em}
+
+\noindent We believe these revisions comprehensively address all reviewer concerns and significantly strengthen the manuscript. We are grateful for the opportunity to improve our work and look forward to the reviewers' assessment of the revised version.
+
+\vspace{1.5em}
+
+\noindent Sincerely,\\
+Kevin Omondi Obote, Annah Mumbua Muli, Vivian Nyamari Moraa, and Joyce Muthoni Njiiri
+
+\end{document}

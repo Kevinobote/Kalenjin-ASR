@@ -1,0 +1,37 @@
+{
+  "num_samples": 200,
+  "metrics": {
+    "greedy_wer": 0.6921887084300077,
+    "greedy_cer": 0.17552681992337166,
+    "beam_lm_wer": 0.6890951276102089,
+    "beam_lm_cer": 0.17325191570881227,
+    "lm_wer_improvement_pp": 0.0030935808197988246,
+    "lm_wer_improvement_relative": 0.4469273743016627
+  },
+  "ablation": {
+    "no_vad_wer": 0.6921887084300077,
+    "no_vad_cer": 0.17552681992337166,
+    "no_vad_delta_wer": 0.0,
+    "no_text_norm_wer": 0.642691415313225,
+    "no_text_norm_cer": 0.1515646893974778,
+    "no_text_norm_delta_wer": -0.04949729311678264
+  },
+  "error_analysis": {
+    "total_errors": 591,
+    "distribution_pct": {
+      "morpheme_boundary": 4.7,
+      "rare_oov": 51.9,
+      "phonetic_confusion": 13.4,
+      "deletion_function_word": 12.5,
+      "insertion": 17.4
+    },
+    "raw_counts": {
+      "insertion": 103,
+      "rare_oov": 307,
+      "deletion_function_word": 74,
+      "phonetic_confusion": 79,
+      "morpheme_boundary_split": 21,
+      "morpheme_boundary_merge": 7
+    }
+  }
+}
